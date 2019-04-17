@@ -99,7 +99,9 @@ app.post('/push', async (req, res) => {
     return res.status(400).send({
       message: 'Error: missing or invalid request body'
     })
-  }  const { topic } = req.body
+  }  
+  
+  const { topic } = req.body
 
   if (!topic || typeof topic !== 'string') {
     return res.status(400).send({
