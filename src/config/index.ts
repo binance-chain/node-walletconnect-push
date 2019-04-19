@@ -13,6 +13,7 @@ const env = process.env.NODE_ENV || 'development'
 const debug = env !== 'production'
 const port = process.env.PORT || env === 'production' ? 5000 : 5002
 const host = process.env.HOST || `0.0.0.0:${port}`
+const bridge_whitelist = process.env.WHITELIST || null 
 
 dotenv.config({ path: configFile, debug: debug })
 
@@ -28,5 +29,6 @@ export default {
   fcm: {
     url: process.env.FCM_API_URL || 'https://fcm.googleapis.com/fcm/send',
     apiKey: process.env.FCM_API_KEY || ''
-  }
+  },
+  bridge_whitelist
 }
