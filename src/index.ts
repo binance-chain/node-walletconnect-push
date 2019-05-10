@@ -32,41 +32,47 @@ app.get('/health', (_, res) => {
 
 app.post('/new', async (req, res) => {
   if (!req.body || typeof req.body !== 'object') {
-    return res.status(400).send({
+    res.status(400).send({
       message: 'Error: missing or invalid request body'
     })
+    return
   }
 
   const { bridge, topic, type, token, peerName, language } = req.body
 
   if (!topic || typeof topic !== 'string') {
-    return res.status(400).send({
+    res.status(400).send({
       message: 'Error: missing or invalid topic field'
     })
+    return
   }
 
   if (!type || typeof type !== 'string') {
-    return res.status(400).send({
+    res.status(400).send({
       message: 'Error: missing or invalid type field'
     })
+    return
   }
 
   if (!token || typeof token !== 'string') {
-    return res.status(400).send({
+    res.status(400).send({
       message: 'Error: missing or invalid token field'
     })
+    return
   }
 
   if (!peerName || typeof peerName !== 'string') {
-    return res.status(400).send({
+    res.status(400).send({
       message: 'Error: missing or invalid peerName field'
     })
+    return
   }
 
   if (!language || typeof language !== 'string') {
-    return res.status(400).send({
+    res.status(400).send({
       message: 'Error: missing or invalid language field'
     })
+    return
   }
 
   const clientDetails: ClientDetails = { type, token, peerName, language }
@@ -79,42 +85,48 @@ app.post('/new', async (req, res) => {
     const { data } = await axios.post(`${bridge}/subscribe`, { topic, webhook })
 
     if (!data.success) {
-      return res.status(400).send({
+      res.status(400).send({
         message: 'Error: failed to subscribe to bridge server'
       })
+      return
     }
 
-    return res.status(200).send({
+    res.status(200).send({
       success: true
     })
+    return
   } catch (error) {
-    return res.status(400).send({
+    res.status(400).send({
       message: 'Error: failed to save client details'
     })
+    return
   }
 })
 
 app.post('/push', async (req, res) => {
   if (!req.body || typeof req.body !== 'object') {
-    return res.status(400).send({
+    res.status(400).send({
       message: 'Error: missing or invalid request body'
     })
+    return
   }  
   
   const { topic } = req.body
 
   if (!topic || typeof topic !== 'string') {
-    return res.status(400).send({
+    res.status(400).send({
       message: 'Error: missing or invalid topic field'
     })
+    return
   }
 
   const clientDetails = await getClientDetails(topic)
 
   if (!clientDetails) {
-    return res.status(400).send({
+    res.status(400).send({
       message: 'Error: failed to get client details'
     })
+    return
   }
 
   const { type, token, peerName, language } = clientDetails
@@ -137,23 +149,27 @@ app.post('/push', async (req, res) => {
           response.data &&
           response.data.success === 1
         ) {
-          return res.status(200).send({
+          res.status(200).send({
             success: true
           })
+          return
         } else {
-          return res.status(400).send({
+          res.status(400).send({
             message: 'Error: failed to push notification'
           })
+          return
         }
       } catch (e) {
-        return res.status(400).send({
+        res.status(400).send({
           message: 'Error: failed to push notification'
         })
+        return
       }
     default:
-      return res.status(400).send({
+      res.status(400).send({
         message: 'Error: push notifcation type not supported'
       })
+      return
   }
 })
 
